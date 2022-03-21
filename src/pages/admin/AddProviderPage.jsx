@@ -16,16 +16,29 @@ import {
 	IconButton,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { grey, orange, pink, cyan } from '@mui/material/colors';
-import { Camera, Image } from '@mui/icons-material';
+import { Add, Camera, Delete, Edit, Image } from '@mui/icons-material';
+import AddSucursal from '../../components/AddSucursal';
+import SucursalPaper from '../../components/SucursalPaper';
 function AddProviderPage() {
+	const [listSucursal, setListSucursal] = useState([]);
 	const [uploadHover, setUploadHover] = useState(false);
+	const [logo, setLogo] = useState(null);
 	const handleChangeLogo = (e) => {
 		console.log(e.target.files);
 		setLogo(URL.createObjectURL(e.target.files[0]));
 	};
-	const [logo, setLogo] = useState(null);
+	const handleAddSucursal = (sucursal) => {
+		setListSucursal([...listSucursal, sucursal]);
+	};
+	const sayHello = (data) => {
+		console.log('HELLOOOOO', data);
+	};
+	useEffect(() => {
+		console.log('SUCURSALES-REG=>', listSucursal);
+	}, [listSucursal]);
+
 	return (
 		<Box component="main">
 			<Container
@@ -38,7 +51,7 @@ function AddProviderPage() {
 				</Box>
 				<Box sx={{ display: 'flex', maxWidth: 1000 }}>
 					{/* primer panel(logo y titulos) */}
-					<Card sx={{ minWidth: 300, maxWidth: 400, p: 2 }}>
+					<Card sx={{ minWidth: 350, maxWidth: 450, p: 2 }}>
 						<Box
 							sx={{
 								width: '100%',
@@ -230,6 +243,7 @@ function AddProviderPage() {
 					<Card
 						sx={{
 							minWidth: 500,
+							maxWidth: 700,
 							p: 2,
 							background: 'white',
 							display: 'flex',
@@ -239,8 +253,12 @@ function AddProviderPage() {
 							ml: 1,
 						}}>
 						<Box sx={{}}>
-							<Box sx={{ width: '100%', p: 1 }}>
-								<Box sx={{}}>
+							{/* Agregar sucurusales */}
+							<Box sx={{ width: '100%', background: 'green' }}>
+								<Box
+									sx={{
+										background: 'pink',
+									}}>
 									<Typography>Sucursales </Typography>
 									<Stack
 										direction="column"
@@ -249,32 +267,38 @@ function AddProviderPage() {
 											alignItems: 'center',
 											border: 1,
 											borderColor: grey[100],
+											p: 1,
+											maxHeight: 250,
+											background: grey[50],
+											overflowY: 'scroll',
 										}}>
-										{[1, 2, 3, 4].map((n, index) => (
-											<Paper
-												key={index}
-												sx={{
-													display: 'flex',
-													alignItems: 'center',
-													width: '90%',
-													minWidth: 200,
-													minHeight: 60,
-													background: grey[50],
-												}}>
-												<Box sx={{ ml: 2 }}>
-													<Typography variant="body1">
-														NombreSucursal
-													</Typography>
-													<Typography variant="body2">
-														direccion: av.asdasdadasd
-													</Typography>
-												</Box>
-											</Paper>
-										))}
+										{listSucursal.length != 0 ? (
+											listSucursal.map((sucursal, index) => (
+												<SucursalPaper
+													sucursal={sucursal}
+													key={index}
+													sayHello={sayHello}
+												/>
+											))
+										) : (
+											<Typography>
+												Es necesario agregar al menos 1 sucursal
+											</Typography>
+										)}
 									</Stack>
+									<Box
+										sx={{
+											width: '100%',
+											textAlign: 'end',
+											alignSelf: 'flex-end',
+										}}>
+										<AddSucursal
+											handleAddSucursal={handleAddSucursal}></AddSucursal>
+									</Box>
 								</Box>
 							</Box>
-							<Box sx={{ width: '100%', p: 1 }}>
+
+							<Box sx={{ width: '100%', mt: 1 }}>
 								<Box sx={{}}>
 									<Typography>Productos </Typography>
 									<Stack
